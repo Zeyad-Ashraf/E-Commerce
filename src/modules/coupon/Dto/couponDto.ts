@@ -3,6 +3,7 @@ import {
   IsDate,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsPositive,
   IsString,
   Length,
@@ -20,7 +21,7 @@ import {
 @ValidatorConstraint({ async: true })
 export class IsDateValid implements ValidatorConstraintInterface {
   validate(fromDate: Date) {
-    return fromDate >= new Date();
+    return fromDate >= new Date(Date.now());
   }
   defaultMessage(): string {
     return 'startDate must be greater than or equal to the current date';
@@ -62,4 +63,31 @@ export class CouponDto {
   @Type(() => Date)
   @Validate(toDateValid)
   expireAt: Date;
+}
+
+export class UpdateCouponDto {
+  @IsOptional()
+  @IsString()
+  @Length(8)
+  code?: string;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  @IsPositive()
+  @Min(1)
+  @Max(100)
+  amount?: number;
+
+  @IsOptional()
+  @IsDate()
+  @Type(() => Date)
+  @Validate(IsDateValid)
+  fromDate?: Date;
+
+  @IsOptional()
+  @IsDate()
+  @Type(() => Date)
+  @Validate(toDateValid)
+  expireAt?: Date;
 }

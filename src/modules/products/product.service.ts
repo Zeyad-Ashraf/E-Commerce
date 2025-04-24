@@ -47,11 +47,11 @@ export class ProductService {
     user: UserDocument,
   ): Promise<object> {
     const { price, discount } = body;
-    if (!user) throw new BadRequestException('Not logged in');
     const findBrand = await this.brandRepo.findOne({
       _id: body['brand'],
     });
     if (!findBrand) throw new BadRequestException('Brand not found');
+
     const findCategory = await this.subCategoryRepo.findOne(
       {
         _id: body['subCategory'],
