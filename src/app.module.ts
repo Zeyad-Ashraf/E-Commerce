@@ -9,6 +9,7 @@ import { SubCategoryModule } from './modules/subCategory/subCategory.module';
 import { BrnadModule } from './modules/brands/brand.module';
 import { ProductModule } from './modules/products/product.module';
 import { CouponModule } from './modules/coupon/coupon.module';
+import { CartModule } from './modules/cart/cart.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { CouponModule } from './modules/coupon/coupon.module';
     BrnadModule,
     ProductModule,
     CouponModule,
+    CartModule,
   ],
   controllers: [AppController],
   providers: [AppService],
