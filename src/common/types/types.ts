@@ -24,4 +24,5 @@ export enum EnumStatus {
   canceled = 'canceled',
   placed = 'placed',
   paid = 'paid',
+  refunded = 'refunded',
 }

@@ -133,4 +133,30 @@ export class OrderService {
     );
     return { message: 'done', order };
   }
+
+  async cancelOrder(orderId: string, user: UserDocument): Promise<object> {
+    const order = await this.ordersRepo.findOneAndUpdate(
+      {
+        _id: Types.ObjectId.createFromHexString(orderId),
+      },
+      {
+        status: EnumStatus.canceled,
+        canceledBy: user._id,
+      },
+    );
+
+    if (!order) return { message: 'order not found' };
+
+    if (order.paymentMethod === EnumPaymentMethods.card) {
+      await this.paymentService.refund({
+        payment_intent: order.payment_intent,
+        reason: 'requested_by_customer',
+      });
+      await this.ordersRepo.findOneAndUpdate(
+        { _id: order._id },
+        { status: EnumStatus.refunded },
+      );
+    }
+    return { message: 'done' };
+  }
 }

@@ -3,6 +3,7 @@ import {
   Controller,
   HttpCode,
   Post,
+  Put,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -42,7 +43,24 @@ export class OrderController {
 
   @Post('webhook')
   @HttpCode(201)
-  async forWebHook(@Body() data: any): Promise<object> {
+  async forWebHook(
+    @Body()
+    data: {
+      data: {
+        object: { metadata: { orderId: string }; payment_intent: string };
+      };
+    },
+  ): Promise<object> {
     return await this.orderServices.webHookService(data);
+  }
+
+  @Put('cancel')
+  @Auth(EnumRole.admin, EnumRole.user)
+  @HttpCode(201)
+  async forCancelWebHook(
+    @Body('orderId') orderId: string,
+    @CurrentUser() user: UserDocument,
+  ): Promise<object> {
+    return await this.orderServices.cancelOrder(orderId, user);
   }
 }

@@ -30,4 +30,17 @@ export class PaymentService {
       duration: 'once',
     });
   }
+
+  async refund({
+    payment_intent,
+    reason,
+  }: {
+    payment_intent: string;
+    reason?: string;
+  }) {
+    return await this.stripe.refunds.create({
+      payment_intent: payment_intent,
+      reason: reason as Stripe.RefundCreateParams.Reason,
+    });
+  }
 }
