@@ -2,24 +2,36 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { Types } from 'mongoose';
 import { CouponsDocument, CouponsRepoServices, UserDocument } from 'src/DB';
 import { UpdateCouponDto } from './Dto/couponDto';
+import { PaymentService } from '../orders/paymentService';
 
 @Injectable()
 export class CouponService {
-  constructor(private readonly couponRepo: CouponsRepoServices) {}
+  constructor(
+    private readonly couponRepo: CouponsRepoServices,
+    private readonly paymentService: PaymentService,
+  ) {}
 
   async createOne(
     body: Partial<CouponsDocument>,
     user: UserDocument,
   ): Promise<object> {
-    const { code, amount, fromDate, expireAt } = body;
+    const { amount, fromDate, expireAt } = body;
+
+    const createStripeCoupon = await this.paymentService.createCoupon({
+      percent_off: amount as number,
+    });
+
+    if (!createStripeCoupon) throw new BadRequestException('Coupon not found');
 
     if (!user) throw new BadRequestException('Not logged in');
 
-    const findCoupon = await this.couponRepo.findOne({ code });
+    const findCoupon = await this.couponRepo.findOne({
+      stripeId: createStripeCoupon.id,
+    });
     if (findCoupon) return { message: 'Coupon already exists' };
 
     const newCoupon = await this.couponRepo.create({
-      code,
+      stripeId: createStripeCoupon.id,
       amount,
       fromDate,
       expireAt,
@@ -52,10 +64,6 @@ export class CouponService {
     body: UpdateCouponDto,
     user: UserDocument,
   ): Promise<object> {
-    if (body?.code) {
-      const findCoupon = await this.couponRepo.findOne({ code: body?.code });
-      if (findCoupon) return { message: 'Coupon already exists' };
-    }
     const newCoupon = await this.couponRepo.findOneAndUpdate(
       { _id: new Types.ObjectId(couponId), addedBy: user._id },
       {

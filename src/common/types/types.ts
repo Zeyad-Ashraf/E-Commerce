@@ -12,3 +12,16 @@ export enum OtpTypes {
   confrimEmail = 'confrimEmail',
   resetPassword = 'resetPassword',
 }
+
+export enum EnumPaymentMethods {
+  card = 'card',
+  cash = 'cash',
+}
+
+export enum EnumStatus {
+  pinding = 'pending',
+  delivered = 'delivered',
+  canceled = 'canceled',
+  placed = 'placed',
+  paid = 'paid',
+}

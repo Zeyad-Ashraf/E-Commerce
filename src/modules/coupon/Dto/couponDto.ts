@@ -5,8 +5,6 @@ import {
   IsNumber,
   IsOptional,
   IsPositive,
-  IsString,
-  Length,
   Max,
   Min,
   Validate,
@@ -39,11 +37,6 @@ export class toDateValid implements ValidatorConstraintInterface {
 }
 
 export class CouponDto {
-  @IsString()
-  @IsNotEmpty()
-  @Length(8)
-  code: string;
-
   @Type(() => Number)
   @IsNumber()
   @IsPositive()
@@ -66,11 +59,6 @@ export class CouponDto {
 }
 
 export class UpdateCouponDto {
-  @IsOptional()
-  @IsString()
-  @Length(8)
-  code?: string;
-
   @IsOptional()
   @Type(() => Number)
   @IsNumber()

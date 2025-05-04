@@ -1,4 +1,10 @@
-import { FilterQuery, Model, Types, UpdateQuery } from 'mongoose';
+import {
+  FilterQuery,
+  Model,
+  PopulateOptions,
+  Types,
+  UpdateQuery,
+} from 'mongoose';
 
 export abstract class DbRepoServices<TDocument> {
   constructor(private readonly model: Model<TDocument>) {}
@@ -9,20 +15,29 @@ export abstract class DbRepoServices<TDocument> {
 
   async findOne(
     query: FilterQuery<TDocument>,
-    populate?: string[] | string,
+    populate?: PopulateOptions[] | PopulateOptions,
   ): Promise<TDocument | null> {
-    const queryBuilder = this.model.findOne(query);
-    if (populate) return await queryBuilder.populate(populate);
-    else return await queryBuilder.exec();
+    return await this.model
+      .findOne(query)
+      .populate(populate || [])
+      .exec();
   }
 
   async findById(
     data: Types.ObjectId,
-    populate?: string[] | string,
+    populate?: string[] | string | PopulateOptions | PopulateOptions[],
   ): Promise<TDocument | null> {
     if (populate)
-      return await this.model.findById(data).populate(populate).exec();
-    return this.model.findById(data).exec();
+      if (
+        Array.isArray(populate) &&
+        populate.every((item) => typeof item === 'object')
+      ) {
+        return await this.model.findById(data).populate(populate).exec();
+      }
+    return await this.model
+      .findById(data)
+      .populate(populate as string | string[])
+      .exec();
   }
 
   async findOneAndUpdate(

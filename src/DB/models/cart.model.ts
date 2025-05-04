@@ -15,11 +15,10 @@ export class Cart {
     type: [
       {
         productId: { type: Types.ObjectId, ref: Product.name },
-        quantity: Number,
-        finalPrice: Number,
+        quantity: { type: Number, required: true },
+        finalPrice: { type: Number, required: true },
       },
     ],
-    required: true,
   })
   products: {
     productId: Types.ObjectId;

@@ -56,7 +56,7 @@ export class ProductService {
       {
         _id: body['subCategory'],
       },
-      ['categoryId'],
+      [{ path: 'categoryId' }],
     );
     if (!findCategory || !findCategory.categoryId)
       throw new BadRequestException(
@@ -157,7 +157,7 @@ export class ProductService {
         {
           _id: query['subCategory'],
         },
-        ['categoryId'],
+        [{ path: 'categoryId' }],
       );
       if (!findCategory || !findCategory.categoryId)
         throw new BadRequestException(

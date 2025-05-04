@@ -11,8 +11,8 @@ export class Coupons {
   @Prop({ type: Number, required: true })
   amount: number;
 
-  @Prop({ type: String, required: true, unique: true })
-  code: string;
+  @Prop({ type: String, unique: true, required: true })
+  stripeId: string;
 
   @Prop({ type: Types.ObjectId, required: true, ref: User.name })
   addedBy: Types.ObjectId;

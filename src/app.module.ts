@@ -10,6 +10,7 @@ import { BrnadModule } from './modules/brands/brand.module';
 import { ProductModule } from './modules/products/product.module';
 import { CouponModule } from './modules/coupon/coupon.module';
 import { CartModule } from './modules/cart/cart.module';
+import { OrderModule } from './modules/orders/order.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { CartModule } from './modules/cart/cart.module';
     ProductModule,
     CouponModule,
     CartModule,
+    OrderModule,
   ],
   controllers: [AppController],
   providers: [AppService],
