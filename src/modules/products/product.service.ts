@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { FilterQuery, Types, UpdateQuery } from 'mongoose';
 import { CloudinaryService } from 'src/common';
 import {
@@ -9,6 +9,8 @@ import {
   SubCategoryRepoServices,
 } from 'src/DB';
 import { ProductFilter } from './dto/productDto';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 
 export interface UploadedImage {
   secure_url: string;
@@ -39,6 +41,7 @@ export class ProductService {
     private readonly subCategoryRepo: SubCategoryRepoServices,
     private readonly brandRepo: BrandsRepoServices,
     private readonly cloudinaryService: CloudinaryService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   async createProduct(
@@ -114,7 +117,7 @@ export class ProductService {
   }
 
   async getProducts(query: ProductFilter): Promise<object> {
-    const { name, sort, select, page } = query;
+    const { name, sort, page } = query;
     let fileFilter: FilterQuery<ProductDocument> = {};
     if (name) {
       fileFilter = {
@@ -124,18 +127,15 @@ export class ProductService {
         ],
       };
     }
+    const products = await this.cacheManager.get('products');
+    if (products) return { products };
     const product = await this.productRepo.findAll({
       fileFilter,
-      populate: [
-        { path: 'category' },
-        { path: 'subCategory' },
-        { path: 'brand' },
-      ],
       sort,
-      select,
       page,
     });
     if (!product) throw new BadRequestException('Brand not found');
+    await this.cacheManager.set('products', product, 2000);
     return { product };
   }
   async updateProduct(

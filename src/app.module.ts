@@ -11,9 +11,12 @@ import { ProductModule } from './modules/products/product.module';
 import { CouponModule } from './modules/coupon/coupon.module';
 import { CartModule } from './modules/cart/cart.module';
 import { OrderModule } from './modules/orders/order.module';
-
+import { CacheModule } from '@nestjs/cache-manager';
 @Module({
   imports: [
+    CacheModule.register({
+      isGlobal: true,
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: './config/.env',

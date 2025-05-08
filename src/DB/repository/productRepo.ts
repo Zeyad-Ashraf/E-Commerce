@@ -29,15 +29,13 @@ export class ProductRepoServices extends DbRepoServices<ProductDocument> {
 
   async findAll({
     fileFilter = {},
-    populate = [],
     page = 1,
     sort = '',
-    select = '',
   }: findOptions): Promise<ProductDocument[]> {
-    const query = this.productModel.find(fileFilter);
-    if (populate.length > 0) query.populate(populate);
+    const query = this.productModel
+      .find(fileFilter)
+      .select('name description coverImage price discount subPrice stock');
     if (sort) query.sort(sort.replaceAll(',', ' '));
-    if (select) query.select(select.replaceAll(',', ' '));
     if (page) query.skip((page - 1) * 5).limit(5);
     return await query.exec();
   }

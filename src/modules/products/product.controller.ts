@@ -58,7 +58,7 @@ export class ProductController {
 
   @Get('')
   @HttpCode(201)
-  @Auth(EnumRole.admin)
+  // @Auth(EnumRole.admin)
   async findProducts(@Query() query: ProductFilter): Promise<object> {
     return await this.productService.getProducts(query);
   }
