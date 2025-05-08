@@ -15,10 +15,9 @@ async function run() {
 
   function finished(err: any, result: any) {
     if (err) {
-      console.error('❌ Error:', err);
+      return { message: 'error', error: err };
     } else {
-      console.log('✅ Test completed successfully');
-      console.log(result);
+      return { message: 'done', result };
     }
   }
 }
