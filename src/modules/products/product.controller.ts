@@ -76,7 +76,7 @@ export class ProductController {
       multerCloudinary({ allowedExt: ImageAllowedExt }),
     ),
   )
-  async updateBrand(
+  async updateProduct(
     @Param('id') id: Types.ObjectId,
     @Body() body: Partial<ProductDto>,
     @UploadedFiles()
@@ -91,7 +91,7 @@ export class ProductController {
   @Delete(':id')
   @HttpCode(201)
   @Auth(EnumRole.admin)
-  async deleteBrand(@Param('id') id: Types.ObjectId): Promise<object> {
+  async deleteProduct(@Param('id') id: Types.ObjectId): Promise<object> {
     return await this.productService.deleteProduct(id);
   }
 }
