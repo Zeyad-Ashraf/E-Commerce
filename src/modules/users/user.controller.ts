@@ -6,15 +6,15 @@ import {
   ValidationPipe,
   UsePipes,
   Req,
-  UseGuards,
+  // UseGuards,
   Get,
-  SetMetadata,
+  // SetMetadata,
 } from '@nestjs/common';
 import { confrimDto, LoginDto, UserDto } from './dto/userDto';
 import { AuthService } from './user.service';
-import { AuthGuard } from 'src/common/guards/authentication';
-import { RolesGuard } from 'src/common/guards/authorization';
-import { EnumRole } from 'src/common';
+// import { AuthGuard } from 'src/common/guards/authentication';
+// import { RolesGuard } from 'src/common/guards/authorization';
+// import { EnumRole } from 'src/common';
 import { Auth } from 'src/common/decorators/authDecorator';
 
 @Controller()

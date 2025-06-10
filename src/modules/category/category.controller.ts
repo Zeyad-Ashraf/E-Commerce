@@ -20,6 +20,7 @@ import { EnumRole, ImageAllowedExt } from 'src/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { multerCloudinary } from 'src/common/utils/multer';
 import { Types } from 'mongoose';
+import { FileValidationPipe } from 'src/common/pipes/filePipe';
 
 @Controller('category')
 export class CategoryController {
@@ -34,7 +35,7 @@ export class CategoryController {
   @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
   async createCategory(
     @Body() body: CategoryDto,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile(new FileValidationPipe()) file: Express.Multer.File,
     @Req() req: Request,
   ): Promise<object> {
     return await this.categoryService.createCategory(body, file, req['user']);
