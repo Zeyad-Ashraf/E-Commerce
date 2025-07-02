@@ -135,9 +135,10 @@ export class ProductService {
       page,
     });
     if (!product) throw new BadRequestException('Brand not found');
-    await this.cacheManager.set('products', product, 2000);
+    await this.cacheManager.set('products', product, 1000);
     return { product };
   }
+
   async updateProduct(
     id: Types.ObjectId,
     query?: UpdateQuery<ProductDocument>,
@@ -231,6 +232,7 @@ export class ProductService {
       throw new BadRequestException('Failed to update product');
     return { message: 'done' };
   }
+
   async deleteProduct(id: Types.ObjectId): Promise<object> {
     const Product = await this.productRepo.findById(id);
     if (!Product) throw new BadRequestException('Product not found');
