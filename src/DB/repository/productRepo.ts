@@ -34,7 +34,8 @@ export class ProductRepoServices extends DbRepoServices<ProductDocument> {
   }: findOptions): Promise<ProductDocument[]> {
     const query = this.productModel
       .find(fileFilter)
-      .select('name description coverImage price discount subPrice stock');
+      .select('name description coverImage price discount subPrice stock')
+      .lean();
     if (sort) query.sort(sort.replaceAll(',', ' '));
     if (page) query.skip((page - 1) * 5).limit(5);
     return await query.exec();

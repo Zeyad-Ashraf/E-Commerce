@@ -135,7 +135,7 @@ export class ProductService {
       page,
     });
     if (!product) throw new BadRequestException('Brand not found');
-    await this.cacheManager.set('products', product, 1000);
+    await this.cacheManager.set('products', product);
     return { product };
   }
 
