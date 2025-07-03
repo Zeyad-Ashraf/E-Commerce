@@ -99,10 +99,8 @@ export class ProductService {
         public_id: coverImages['public_id'] as string,
       },
     };
-    for (let i = 0; i < 10; i++) {
-      const product = await this.productRepo.create(dummy);
-      if (!product) throw new BadRequestException('Failed to create category');
-    }
+    const product = await this.productRepo.create(dummy);
+    if (!product) throw new BadRequestException('Failed to create category');
     return { message: 'done' };
   }
 

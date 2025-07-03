@@ -13,6 +13,7 @@ import { CartModule } from './modules/cart/cart.module';
 import { OrderModule } from './modules/orders/order.module';
 import { CacheModule } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-store';
+import { OpenRouterModule } from './modules/openRouter/openRouter.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -37,6 +38,7 @@ import { redisStore } from 'cache-manager-redis-store';
     CouponModule,
     CartModule,
     OrderModule,
+    OpenRouterModule,
   ],
   controllers: [AppController],
   providers: [AppService],

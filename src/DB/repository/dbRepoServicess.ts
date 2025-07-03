@@ -23,6 +23,16 @@ export abstract class DbRepoServices<TDocument> {
       .exec();
   }
 
+  async find(
+    query: FilterQuery<TDocument>,
+    populate?: PopulateOptions[] | PopulateOptions,
+  ): Promise<TDocument[] | null> {
+    return await this.model
+      .find(query)
+      .populate(populate || [])
+      .exec();
+  }
+
   async findById(
     data: Types.ObjectId,
     populate?: string[] | string | PopulateOptions | PopulateOptions[],

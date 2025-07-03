@@ -6,6 +6,7 @@ export enum EnumGender {
 export enum EnumRole {
   user = 'user',
   admin = 'admin',
+  system = 'system',
 }
 
 export enum OtpTypes {

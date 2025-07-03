@@ -73,7 +73,13 @@ export class Product {
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);
-ProductSchema.index({ name: 1, slug: 1 });
+
+ProductSchema.index({ name: 1, slug: 1, price: 1 });
+ProductSchema.index({ name: 1, price: 1 });
+ProductSchema.index({ price: 1 });
+ProductSchema.index({ brand: 1, price: 1 });
+ProductSchema.index({ SubCategory: 1, price: 1 });
+
 export const ProductModel = MongooseModule.forFeature([
   { name: Product.name, schema: ProductSchema },
 ]);

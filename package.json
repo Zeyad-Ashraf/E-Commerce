@@ -29,6 +29,7 @@
     "@nestjs/mongoose": "^11.0.3",
     "@nestjs/platform-express": "^11.0.1",
     "@types/autocannon": "^7.12.7",
+    "axios": "^1.10.0",
     "bcrypt": "^5.1.1",
     "cache-manager": "^6.4.3",
     "cache-manager-redis-store": "^3.0.1",
