@@ -63,12 +63,14 @@ export class OpenrouterService {
         model: 'mistralai/mistral-7b-instruct',
         messages: [
           {
-            role: EnumRole.system,
+            role: EnumRole.user,
             content: prompt,
           },
         ],
       });
-
+      if (!response) {
+        throw new BadRequestException('Invalid response from OpenRouter');
+      }
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
       const message = response.data.choices?.[0]?.message?.content;
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment

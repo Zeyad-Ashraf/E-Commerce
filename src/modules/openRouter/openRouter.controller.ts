@@ -15,6 +15,7 @@ export class OpenrouterController {
 
   @Post('bestItem')
   @HttpCode(200)
+//   @Auth(EnumRole.user, EnumRole.admin)
   @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
   async getBestProducts(@Body() data: OpenDto): Promise<object> {
     return await this.openRouterService.FindBestBrandForItem(data);
