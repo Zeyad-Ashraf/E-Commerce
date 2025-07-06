@@ -21,7 +21,7 @@ export class CartController {
 
   @Post()
   @HttpCode(201)
-  @Auth(EnumRole.user)
+  @Auth(EnumRole.user, EnumRole.admin)
   @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
   async addToCart(@Body() body: CartDto, @CurrentUser() user: UserDocument) {
     return await this.cartServices.addToCart(body, user);

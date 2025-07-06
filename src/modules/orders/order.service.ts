@@ -4,10 +4,11 @@ import {
   CouponsRepoServices,
   OrdersRepoServices,
   Product,
+  ProductRepoServices,
   UserDocument,
 } from 'src/DB';
 import { CreateOrderDto } from './Dto/orderDto';
-import { Types } from 'mongoose';
+import { ObjectId, Types } from 'mongoose';
 import { EnumPaymentMethods, EnumStatus } from 'src/common';
 import { PaymentService } from './paymentService';
 import Stripe from 'stripe';
@@ -28,6 +29,7 @@ export class OrderService {
     private readonly cartRepo: CartRepoServices,
     private readonly paymentService: PaymentService,
     private readonly couponRepo: CouponsRepoServices,
+    private readonly productRepo: ProductRepoServices,
   ) {}
 
   async createOrder(body: CreateOrderDto, user: UserDocument): Promise<object> {
@@ -56,6 +58,16 @@ export class OrderService {
           ? EnumStatus.placed
           : EnumStatus.pinding,
     });
+
+    for (const item of findCart.products) {
+      const productId = item.productId;
+      const quantityOrdered = item.quantity;
+
+      await this.productRepo.updateOne(
+        { _id: productId },
+        { $inc: { quantity: -quantityOrdered } },
+      );
+    }
     return { message: 'done', order };
   }
 
@@ -122,6 +134,7 @@ export class OrderService {
   async webHookService(data: {
     data: { object: { metadata: { orderId: string }; payment_intent: string } };
   }): Promise<object> {
+    console.log(data.data.object.metadata.orderId);
     const order = await this.ordersRepo.findOneAndUpdate(
       {
         _id: data.data.object.metadata.orderId,
@@ -129,6 +142,15 @@ export class OrderService {
       {
         payment_intent: data.data.object.payment_intent,
         status: EnumStatus.paid,
+      },
+    );
+
+    const findCart = await this.cartRepo.findOneAndUpdate(
+      {
+        _id: order?.Cart,
+      },
+      {
+        products: [],
       },
     );
     return { message: 'done', order };

@@ -41,7 +41,7 @@ export class OrderController {
     return await this.orderServices.paymentWithStripe(orderId, user, couponId);
   }
 
-  @Post('webhook')
+  @Post('success')
   @HttpCode(201)
   async forWebHook(
     @Body()
