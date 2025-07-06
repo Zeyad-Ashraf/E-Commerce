@@ -1,16 +1,17 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { ProductRepoServices } from 'src/DB';
+import { OrdersRepoServices, ProductRepoServices } from 'src/DB';
 import { OpenDto } from './Dto/openRouterDto';
 import { EnumRole, openRouter } from 'src/common';
-// Make sure openRouter is properly typed, for example:
-import { AxiosInstance } from 'axios';
 import { Types } from 'mongoose';
-// If openRouter is an Axios instance, you can assert its type:
-const typedOpenRouter = openRouter as AxiosInstance;
+
+const typedOpenRouter = openRouter;
 
 @Injectable()
 export class OpenrouterService {
-  constructor(private readonly productRepo: ProductRepoServices) {}
+  constructor(
+    private readonly productRepo: ProductRepoServices,
+    private readonly orderRepo: OrdersRepoServices,
+  ) {}
 
   async FindBestBrandForItem(data: OpenDto): Promise<object> {
     const { price, subCategory } = data;
@@ -58,6 +59,61 @@ export class OpenrouterService {
         Here is the product data:
         ${JSON.stringify(products, null, 2)}
     `;
+    try {
+      const response = await typedOpenRouter.post('/chat/completions', {
+        model: 'mistralai/mistral-7b-instruct',
+        messages: [
+          {
+            role: EnumRole.user,
+            content: prompt,
+          },
+        ],
+      });
+      if (!response) {
+        throw new BadRequestException('Invalid response from OpenRouter');
+      }
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+      const message = response.data.choices?.[0]?.message?.content;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      return { message };
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      throw new BadRequestException(
+        'Failed to fetch recommendations from OpenRouter',
+      );
+    }
+  }
+
+  async analysis(): Promise<object> {
+    const orders = await this.orderRepo.find(
+      {
+        createdAt: { $gt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) },
+      },
+      {
+        path: 'Cart',
+        populate: {
+          path: 'products.productId',
+        },
+      },
+    );
+
+    if (orders?.length === 0) return { message: 'No Orders Found' };
+
+    const prompt = `
+      You are a smart data analyst. I will give you a list of sales data in JSON format retrieved from a database.
+
+      Please analyze the data and provide insights including:
+      - Top-selling products.
+      - Total revenue.
+      - Number of orders.
+      - Purchase trends (e.g., peak hours or days).
+      - Any unusual patterns or observations.
+
+      Here is the sales data:
+
+      ${JSON.stringify(orders)}
+
+      Please respond with a clear and concise analysis based on the numbers`;
     try {
       const response = await typedOpenRouter.post('/chat/completions', {
         model: 'mistralai/mistral-7b-instruct',

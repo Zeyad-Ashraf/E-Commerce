@@ -8,7 +8,7 @@ import {
   UserDocument,
 } from 'src/DB';
 import { CreateOrderDto } from './Dto/orderDto';
-import { ObjectId, Types } from 'mongoose';
+import { Types } from 'mongoose';
 import { EnumPaymentMethods, EnumStatus } from 'src/common';
 import { PaymentService } from './paymentService';
 import Stripe from 'stripe';
