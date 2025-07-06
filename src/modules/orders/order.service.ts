@@ -134,7 +134,6 @@ export class OrderService {
   async webHookService(data: {
     data: { object: { metadata: { orderId: string }; payment_intent: string } };
   }): Promise<object> {
-    console.log(data.data.object.metadata.orderId);
     const order = await this.ordersRepo.findOneAndUpdate(
       {
         _id: data.data.object.metadata.orderId,
